@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Postback</title>
+</head>
+<body>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('aff_sub4') || urlParams.get('subid');
+    const payout = urlParams.get('payout') || '0.00';
+
+    if (userId) {
+        const firebaseUrl = `https://simobst-64207-default-rtdb.firebaseio.com/conversions/${encodeURIComponent(userId)}.json`;
+
+        fetch(firebaseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                payout: payout,
+                timestamp: Date.now()
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                document.body.innerText = "OK";
+            } else {
+                document.body.innerText = "Error";
+            }
+        })
+        .catch(error => {
+            document.body.innerText = "Error";
+        });
+    } else {
+        document.body.innerText = "Missing User ID";
+    }
+</script>
+</body>
+</html>
